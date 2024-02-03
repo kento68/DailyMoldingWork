@@ -37,7 +37,11 @@
 
 	String err=(String)request.getAttribute("err");
 	String msg=(String)request.getAttribute("msg");
+	
+	// セッションスコープからユーザー情報を取得
+	User loginUser = (User) session.getAttribute("loginUser");
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -49,6 +53,7 @@
 <title>DailyMoldingWork</title>
 </head>
 <body>
+
 <div class="container" style="margin-top:5px;">
 <% if(err !=null){%>
 <div class="alert alert-danger" role="alert">
@@ -64,10 +69,15 @@
 <form action="/dailyMoldingWork/main" method="post" >
 
 <header>
-	<ul>
-    	<li><a href="/dailyMoldingWork/main">TOP</a></li>
+	<ul> 
+	    <!-- loginUser分岐処理 -->
+    	<li><a href="<%= request.getContextPath() %>/main">TOP</a></li>
+    	<% if(loginUser != null) {%>
     	<li><a href="/dailyMoldingWork/Ingestiondata">Log</a></li>
     	<li class="contact"><c:out value="${loginUser.name}"/>:ログイン中</li>
+    	<% } else { %>
+    	<li class="contact"><c:out value="localuser"/>:ログイン中</li>
+    	<% } %>
 	</ul>
 </header>
 
@@ -518,14 +528,16 @@
  </div>
 </div>
 
-  <%if(!id.isEmpty()) {%>
-  <input type="hidden" name="id" value="<%=id %>">
-  <%} %>
-  <button type="submit" class="btn btn-primary"><%=id.isEmpty()?"登録":"更新" %></button>
+
+
+<%if(!id.isEmpty()) {%>
+<input type="hidden" name="id" value="<%=id %>">
+<%} %>
+<button type="submit" class="btn btn-primary"><%=id.isEmpty()?"登録":"更新" %></button>
   
 <footer>
 	<ul>
-    	<li><a href="/dailyMoldingWork/">Logout</a></li>
+    	<li><a href="/dailyMoldingWork/Logout">Logout</a></li>
 	</ul>
 </footer>
  
@@ -916,6 +928,8 @@ document.addEventListener('DOMContentLoaded', function () {
         defectClassificationCode9Select.required = true;
     }
 });
-
+ 
 </script>
+
+
 </body>

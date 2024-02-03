@@ -9,7 +9,7 @@
 
 </head>
     <div id="login">
-      <form action="/dailyMoldingWork/Login" method="post" name='form-login'>
+      <form action="${pageContext.request.contextPath}/Login" method="post" name='form-login'>
         <span class="fontawesome-user"></span>
           <input type="text" id="user" placeholder="Username" name="name">
        

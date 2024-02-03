@@ -19,7 +19,7 @@
 <!-- Bootstrap CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/Registration.css">
-<title>DailyMoldingWorkReport</title>
+<title>DailyMoldingWork</title>
 </head>
 <body>
 <div class="container" style="margin-top:10px;">
@@ -34,7 +34,7 @@
 </div>
 <%} %>
 
-<form action="/dailyMoldingWork/ingestiondata" method="post" >
+<form action="<%= request.getContextPath() %>/ingestiondata" method="post" >
 
 <header>
 	<ul>
@@ -65,7 +65,7 @@
 
 <footer>
 	<ul>
-    	<li><a href="/dailyMoldingWork/">Logout</a></li>
+    	<li><a href="/dailyMoldingWork/Logout">Logout</a></li>
 	</ul>
 </footer>
  
