@@ -34,6 +34,7 @@
 	String numberdefects8=product == null ? "":String.valueOf(product.getNumberdefects8());
 	String defectclassificationcode9=product == null ? "":String.valueOf(product.getDefectclassificationcode9());
 	String numberdefects9=product == null ? "":String.valueOf(product.getNumberdefects9());
+	String partnumber=product == null ? "":String.valueOf(product.getPartnumber());
 
 	String err=(String)request.getAttribute("err");
 	String msg=(String)request.getAttribute("msg");
@@ -68,7 +69,7 @@
 
 <div class="container-fluid" style="margin-top:20px;">
 
-<form action="<%= request.getContextPath() %>/main" method="post" >
+<form id="Form" action="<%= request.getContextPath() %>/main" method="post" >
 
 <header>
 	<ul> 
@@ -77,6 +78,7 @@
     	<li><a href="<%= request.getContextPath() %>/main2">MultiData</a></li>
     	<% if(loginUser != null) {%>
     	<li><a href="<%= request.getContextPath() %>/Ingestiondata">Log</a></li>
+    	<li><a href="<%= request.getContextPath() %>/BacklogList">Backlog</a></li>
     	<li class="contact"><c:out value="${loginUser.name}"/>:ログイン中</li>
     	<button type="button" class="btn btn-primary custom-btn" style="margin-left: 5px; margin-bottom: 5px; padding-top: 1px; padding-bottom: 1px;" id="toggle-language-btn" onclick="toggleLanguage()">Dịch văn bản</button>
     	<% } else { %>
@@ -161,17 +163,32 @@
 <input type="hidden" class="form-control" id="sparenumberdefects2_R" name="sparenumberdefects2_R" value="">
 <!-- <label for="flag"><b>予備不良数3_R:　</b></label> -->
 <input type="hidden" class="form-control" id="sparenumberdefects3_R" name="sparenumberdefects3_R" value="">
-
+<!-- <label for="flag"><b>品番_R　:　</b></label> -->
+<input type="hidden" class="form-control" id="partnumber_R" name="partnumber_R" value="0">
 
 <div class="form-row">
-  <div class="form-group col-sm-6">
-    <label for="arrangementnumber" class="required-label" id="arrangementnumber_label"><b>手配番号　:</b></label>
-    <input type="number" class="form-control" id="arrangementnumber" name="arrangementnumber" value="<%=arrangementnumber%>" placeholder="手配番号を入力してください" required>
-  </div>
   <div class="form-group col-sm-6">
     <label for="workperformancedate" class="required-label" id="workperformancedate_label"><b>作業実績日:</b></label>
     <input type="date" class="form-control" id="workperformancedate" name="workperformancedate" value="<%=workperformancedate%>"required>
  </div>
+</div>
+
+<div class="form-row">
+  <div class="form-group col-sm-6">
+    <label for="arrangementnumber" class="required-label" id="arrangementnumber_label"><b>手配番号　:</b></label>
+    <input 
+      type="number" class="form-control" id="arrangementnumber" 
+      name="arrangementnumber" placeholder="手配番号を入力してください" required>
+      ✅ 更新の際は、手配番号を一度削除して再入力して下さい。
+  </div>
+  
+  <div class="form-group col-sm-6">
+    <label for="partnumber" class="required-label" id="partnumber_label"><b>品番　　　:</b></label>
+    <input 
+      type="text" class="form-control" id="partnumber" name="partnumber" placeholder="手配番号入力後、手配番号と合致する品番が表示されます"  disabled >
+     <div id="partnumber_errmessage" style="color: red; display: none;">手配番号と合致する品番がありません</div>
+     <% if(loginUser != null) {%> ✅ 手配番号を再入力した際、品番が更新されたか確認して下さい。 <% } %>
+  </div>
 </div>
 
 <div class="form-row">
@@ -661,7 +678,7 @@
 <input type="hidden" name="id" value="<%=id %>">
 <%} %>
 
-<button type="submit" class="btn btn-primary custom-btn" id="registration" style="margin-left: 15px;" onclick="submitForm()"><%=id.isEmpty()?"登録":"更新" %></button>
+<button type="submit" class="btn btn-primary custom-btn" id="registration" style="margin-left: 15px;" onclick="submitForm(event)"><%=id.isEmpty()?"登録":"更新" %></button>
  
 <footer>
 	<ul>
@@ -696,6 +713,20 @@ if (!workinghoursValue) {
 } else if(workinghoursValue === '夜勤'){
 	document.getElementById('radio1b').checked = true;
 }
+
+<!-- 品番:初期値に基づいて分岐 -->
+document.addEventListener('DOMContentLoaded', function () {
+	var partnumberValue = '<%=partnumber%>';
+    var selectElement = document.getElementsByName('partnumber')[0]; 
+
+    // 初期値が空の場合は何も選択しない
+    if (!partnumberValue) {
+        selectElement.value = '';
+    } else {
+        // 初期値が存在する場合は対応するオプションを選択
+        selectElement.value = partnumberValue;
+    }
+});
 
 <!-- 機械コード:初期値に基づいて分岐 -->
 document.addEventListener('DOMContentLoaded', function () {
@@ -1157,6 +1188,7 @@ function submitForm() {
   document.getElementById('defectclassificationcode1').removeAttribute('disabled');
   document.getElementById('defectclassificationcode2').removeAttribute('disabled');
   document.getElementById('defectclassificationcode3').removeAttribute('disabled');
+  document.getElementById('partnumber').removeAttribute('disabled');
   
   // フォームを送信する
   document.getElementById('myForm').submit();
@@ -1182,6 +1214,63 @@ document.getElementById('workmannumber').addEventListener('input', function() {
     }
 });
 
+<!-- SQLから品番出力 -->
+//品番選択時のイベントリスナー
+document.getElementById("partnumber").addEventListener("change", function() {
+ const selectedPartnumber = this.value;
+ // 自動送信を行わない
+});
+
+//イベントリスナーを追加
+document.getElementById('partnumber').addEventListener('change', function () {
+    preventDuplicate(this);
+});
+
+<!-- 手配番号と品番チェックの紐付け表示処理 -->
+document.getElementById("arrangementnumber").addEventListener("change", function() {
+    
+    const arrangementnumber = this.value.trim();
+    const partnumberInput = document.getElementById("partnumber");
+    const partnumberErrMessage = document.getElementById("partnumber_errmessage");
+
+    console.log("Selected arrangementnumber:", arrangementnumber);
+
+    partnumberInput.value = "手配番号入力後、手配番号と合致する品番が表示されます"; // 初期化
+    partnumberInput.disabled = true; // デフォルトで無効
+    partnumberErrMessage.style.display = "none";   // エラーメッセージ非表示
+
+    if (arrangementnumber) {
+        fetch('main', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+            body: new URLSearchParams({ 'arrangementnumber': arrangementnumber })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            console.log("Parsed response data:", data[0].partnumber);
+            
+            if (Array.isArray(data) && data.length > 0) {
+            	partnumberInput.value = data[0].partnumber; // ✅ 最初のデータを partnumber に格納
+            	partnumberErrMessage.style.display = "none"; // エラー非表示
+                
+            } else {
+            	partnumberInput.value = "";
+            	partnumberErrMessage.style.display = "block"; // エラー表示
+                
+            }
+        })
+        .catch(error => {
+            console.error('エラー:', error);
+            partnumberInput.value = "";
+            partnumberInput.disabled = true; // エラー時も無効化
+            partnumberErrMessage.style.display = "block";
+        });
+    }
+});
+
 <!-- ベトナム語と日本語切替 -->
 function toggleLanguage() {
 	
@@ -1202,7 +1291,34 @@ function toggleLanguage() {
     } else {
     	arrangementnumber.placeholder  = "手配番号を入力してください";
     }
-	
+
+	var partnumber_label = document.getElementById("partnumber_label");
+	var partnumber = document.getElementById("partnumber");
+	// 品番_ラベルの翻訳変換
+	if (partnumber_label.textContent === "品番　　　:") {
+		partnumber_label.textContent = "Mã số sản phẩm:";
+		partnumber_label.style.fontWeight = "bold";
+	} else {
+		partnumber_label.textContent = "品番　　　:";
+		partnumber_label.style.fontWeight = "bold";
+	}
+	// 品番_メッセージの翻訳変換
+	if (partnumber.placeholder  === "手配番号入力後、手配番号と合致する品番が表示されます") {
+		partnumber.placeholder  = "Sau khi nhập số đơn hàng, số sản phẩm khớp với số đơn hàng sẽ được hiển thị.";
+    } else {
+    	partnumber.placeholder  = "手配番号入力後、手配番号と合致する品番が表示されます";
+    }
+    
+	// 品番が見つからない場合のメッセージの翻訳
+	const partnumberErrMessage = document.getElementById("partnumber_errmessage");
+	if (partnumberErrMessage) {
+	    if (partnumberErrMessage.innerText === "手配番号と合致する品番がありません") {
+	    	partnumberErrMessage.innerText = "Không có số sản phẩm khớp với số đơn hàng.";
+	    } else {
+	    	partnumberErrMessage.innerText = "手配番号と合致する品番がありません";
+	    }
+	}
+
     var workperformancedate_label = document.getElementById("workperformancedate_label");
     // 作業実績日_ラベルの翻訳変換
     if (workperformancedate_label.textContent === "作業実績日:") {

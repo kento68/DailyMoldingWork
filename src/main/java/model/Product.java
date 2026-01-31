@@ -38,6 +38,7 @@ public class Product implements Serializable{
 	private String sparenumberdefects1; //予備不良数1
 	private String sparenumberdefects2; //予備不良数2
 	private String sparenumberdefects3; //予備不良数3
+	private String partnumber; //品番
 	
 	private float  workmantime_R; //作業工数_R
 	private float  machinetime_R; //機械時間_R
@@ -68,6 +69,7 @@ public class Product implements Serializable{
 	private String sparenumberdefects1_R; //予備不良数1_R
 	private String sparenumberdefects2_R; //予備不良数2_R
 	private String sparenumberdefects3_R; //予備不良数3_R
+	private String partnumber_R; //品番_R
 	
 	public Product(){}
 	public Product(int flag,int arrangementnumber,String workperformancedate,int workmannumber,float workmantime,
@@ -78,7 +80,7 @@ public class Product implements Serializable{
 			String defectclassificationcode7,String numberdefects7,String defectclassificationcode8,String numberdefects8,
 			String defectclassificationcode9,String numberdefects9,
 			String sparepartnumber1,String sparepartnumber2,String sparepartnumber3,
-			String sparenumberdefects1,String sparenumberdefects2,String sparenumberdefects3,
+			String sparenumberdefects1,String sparenumberdefects2,String sparenumberdefects3,String partnumber,
 			
 			float workmantime_R,float machinetime_R,int arrangementnumber_R,int numbernodefectiveproducts_R,int totalnumberdefects_R,
 			String defectclassificationcode1_R,int numberdefects1_R,String defectclassificationcode2_R,int numberdefects2_R,
@@ -87,7 +89,7 @@ public class Product implements Serializable{
 			String defectclassificationcode7_R,String numberdefects7_R,String defectclassificationcode8_R,String numberdefects8_R,
 			String defectclassificationcode9_R,String numberdefects9_R,
 			String sparepartnumber1_R,String sparepartnumber2_R,String sparepartnumber3_R,
-			String sparenumberdefects1_R,String sparenumberdefects2_R,String sparenumberdefects3_R){
+			String sparenumberdefects1_R,String sparenumberdefects2_R,String sparenumberdefects3_R,String partnumber_R){
 		
 		this.flag=flag;
 		this.arrangementnumber=arrangementnumber;
@@ -124,6 +126,8 @@ public class Product implements Serializable{
 		this.sparenumberdefects1=sparenumberdefects1;
 		this.sparenumberdefects2=sparenumberdefects2;
 		this.sparenumberdefects3=sparenumberdefects3;
+		this.partnumber=partnumber;
+		
 		this.workmantime_R=workmantime_R;
 		this.machinetime_R=machinetime_R;
 		this.arrangementnumber_R=arrangementnumber_R;
@@ -153,6 +157,7 @@ public class Product implements Serializable{
 		this.sparenumberdefects1_R=sparenumberdefects1_R;
 		this.sparenumberdefects2_R=sparenumberdefects2_R;
 		this.sparenumberdefects3_R=sparenumberdefects3_R;
+		this.partnumber_R=partnumber_R;
 	}
 	public Product(int id,int flag,int arrangementnumber,String workperformancedate,int workmannumber,float workmantime,
 			String workinghours,float machinetime,String machinecode,int numbernodefectiveproducts,int totalnumberdefects,String remarks,
@@ -161,7 +166,8 @@ public class Product implements Serializable{
 			String defectclassificationcode5,String numberdefects5,String defectclassificationcode6,String numberdefects6,
 			String defectclassificationcode7,String numberdefects7,String defectclassificationcode8,String numberdefects8,
 			String defectclassificationcode9,String numberdefects9,String sparepartnumber1,String sparepartnumber2,String sparepartnumber3,
-			String sparenumberdefects1,String sparenumberdefects2,String sparenumberdefects3,
+			String sparenumberdefects1,String sparenumberdefects2,String sparenumberdefects3,String partnumber,
+			
 			float workmantime_R,float machinetime_R,int arrangementnumber_R,int numbernodefectiveproducts_R,int totalnumberdefects_R,
 			String defectclassificationcode1_R,int numberdefects1_R,String defectclassificationcode2_R,int numberdefects2_R,
 			String defectclassificationcode3_R,int numberdefects3_R,String defectclassificationcode4_R,String numberdefects4_R,
@@ -169,7 +175,7 @@ public class Product implements Serializable{
 			String defectclassificationcode7_R,String numberdefects7_R,String defectclassificationcode8_R,String numberdefects8_R,
 			String defectclassificationcode9_R,String numberdefects9_R,
 			String sparepartnumber1_R,String sparepartnumber2_R,String sparepartnumber3_R,
-			String sparenumberdefects1_R,String sparenumberdefects2_R,String sparenumberdefects3_R){
+			String sparenumberdefects1_R,String sparenumberdefects2_R,String sparenumberdefects3_R,String partnumber_R){
 		
 		this(flag,arrangementnumber,workperformancedate,workmannumber,workmantime,workinghours,machinetime,machinecode,
 				numbernodefectiveproducts,totalnumberdefects,remarks,
@@ -178,7 +184,7 @@ public class Product implements Serializable{
 				defectclassificationcode5,numberdefects5,defectclassificationcode6,numberdefects6,
 				defectclassificationcode7,numberdefects7,defectclassificationcode8,numberdefects8,
 				defectclassificationcode9,numberdefects9,sparepartnumber1,sparepartnumber2,sparepartnumber3,
-				sparenumberdefects1,sparenumberdefects2,sparenumberdefects3,
+				sparenumberdefects1,sparenumberdefects2,sparenumberdefects3,partnumber,
 				
 				workmantime_R,machinetime_R,arrangementnumber_R,numbernodefectiveproducts_R,totalnumberdefects_R,
 				defectclassificationcode1_R,numberdefects1_R,defectclassificationcode2_R,numberdefects2_R,
@@ -186,7 +192,7 @@ public class Product implements Serializable{
 				defectclassificationcode5_R,numberdefects5_R,defectclassificationcode6_R,numberdefects6_R,
 				defectclassificationcode7_R,numberdefects7_R,defectclassificationcode8_R,numberdefects8_R,
 				defectclassificationcode9_R,numberdefects9_R,sparepartnumber1_R,sparepartnumber2_R,sparepartnumber3_R,
-				sparenumberdefects1_R,sparenumberdefects2_R,sparenumberdefects3_R);
+				sparenumberdefects1_R,sparenumberdefects2_R,sparenumberdefects3_R,partnumber_R);
 		this.id=id;
 	}
 	public int getId() {
@@ -405,6 +411,12 @@ public class Product implements Serializable{
 	public void setSparenumberdefects3(String sparenumberdefects3) {
 		this.sparenumberdefects3 = sparenumberdefects3;
 	}
+	public String getPartnumber() {
+		return partnumber;
+	}
+	public void setPartnumber(String partnumber) {
+		this.partnumber = partnumber;
+	}
 	public float getWorkmantime_R() {
 		return workmantime_R;
 	}
@@ -578,5 +590,11 @@ public class Product implements Serializable{
 	}
 	public void setSparenumberdefects3_R(String sparenumberdefects3_R) {
 		this.sparenumberdefects3_R = sparenumberdefects3_R;
+	}
+	public String getPartnumber_R() {
+		return partnumber_R;
+	}
+	public void setPartnumber_R(String partnumber_R) {
+		this.partnumber_R = partnumber_R;
 	}
 }

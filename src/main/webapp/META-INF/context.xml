@@ -25,7 +25,7 @@
       auth="Container"
       type="javax.sql.DataSource"
       driverClassName="com.mysql.jdbc.Driver"
-      url="jdbc:mysql://localhost/dailymoldingworkreport"
+      url="jdbc:mysql://localhost/dailymoldingwork"
       connectionProperties="autoReconnect=true;verifyServerCertificate=false;useSSL=false;requireSSL=false;useUnicode=true;characterEncoding=UTF-8;"
       username="root"
       password="T120353t120353"
@@ -33,26 +33,21 @@
 </Context>
 
                <!-- UM425QA-KIR915W -->
-<!-- url="jdbc:mysql://localhost:3307/inventorycontrol" -->
+<!-- url="jdbc:mysql://localhost:3307/dailymoldingwork" -->
 <!-- username="root" -->
 <!-- username="T120353t120353" -->
 
                <!-- DESKTOP-KBUH9GC -->
-<!-- url="jdbc:mysql://localhost/inventorycontrol" -->
+<!-- url="jdbc:mysql://localhost/dailymoldingwork" -->
 <!-- username="root" -->
 <!-- username="T120353t120353" -->
-
-                 <!-- Raspberry Pi(192.168.10.103 ) -->
-<!-- url="jdbc:mysql://localhost:3306/dailymoldingwork" -->
-<!-- username="kento68" -->
-<!-- password="t120353120353" -->
-
-                 <!-- Raspberry Pi(192.168.10.122 ) -->
-<!-- url="jdbc:mysql://localhost:3306/dailymoldingwork" -->
-<!-- username="kento68" -->
-<!-- password="t120353120353" -->
 
                  <!-- Raspberry Pi(192.168.10.118 ) -->
 <!-- url="jdbc:mysql://localhost:3306/dailymoldingwork" -->
 <!-- username="kakuichi" -->
 <!-- password="kakukaku" -->
+
+                 <!-- Raspberry Pi(192.168.10.122 ) -->
+<!-- url="jdbc:mysql://localhost:3306/dailymoldingwork" -->
+<!-- username="kento68" -->
+<!-- password="t120353120353" -->

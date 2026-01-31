@@ -34,6 +34,7 @@
 	String numberdefects8=product == null ? "":String.valueOf(product.getNumberdefects8());
 	String defectclassificationcode9=product == null ? "":String.valueOf(product.getDefectclassificationcode9());
 	String numberdefects9=product == null ? "":String.valueOf(product.getNumberdefects9());
+	String partnumber=product == null ? "":String.valueOf(product.getPartnumber());
 
 	String arrangementnumber_R=product == null ? "":String.valueOf(product.getArrangementnumber_R());
 	String numbernodefectiveproducts_R=product == null ? "":String.valueOf(product.getNumbernodefectiveproducts_R());
@@ -47,6 +48,7 @@
 	String numberdefects7_R=product == null ? "":String.valueOf(product.getNumberdefects7_R());
 	String numberdefects8_R=product == null ? "":String.valueOf(product.getNumberdefects8_R());
 	String numberdefects9_R=product == null ? "":String.valueOf(product.getNumberdefects9_R());
+	String partnumber_R=product == null ? "":String.valueOf(product.getPartnumber_R());
 	
 	String err=(String)request.getAttribute("err");
 	String msg=(String)request.getAttribute("msg");
@@ -90,6 +92,7 @@
     	<li><a href="<%= request.getContextPath() %>/main2">MultiData</a></li>
     	<% if(loginUser != null) {%>
     	<li><a href="<%= request.getContextPath() %>/Ingestiondata">Log</a></li>
+    	<li><a href="<%= request.getContextPath() %>/BacklogList">Backlog</a></li>
     	<li class="contact"><c:out value="${loginUser.name}"/>:ログイン中</li>
     	<button type="button" class="btn btn-primary custom-btn" style="margin-left: 5px; margin-bottom: 5px; padding-top: 1px; padding-bottom: 1px;" id="toggle-language-btn" onclick="toggleLanguage()">Dịch văn bản</button>
     	<% } else { %>
@@ -151,17 +154,35 @@
 <!-- <label for="flag"><b>予備不良数3_R:　</b></label> -->
 <input type="hidden" class="form-control" id="sparenumberdefects3_R" name="sparenumberdefects3_R" value="">
 
-
 <div class="form-row">
   <div class="form-group col-sm-6">
-    <label for="arrangementnumber" class="required-label" id="arrangementnumber_label"><b>手配番号　:</b></label>
-    <input type="number" class="form-control" id="arrangementnumber" name="arrangementnumber" value="<%=arrangementnumber%>" placeholder="LH(LWR):手配番号を入力してください" required>
-    <input type="number" class="form-control" id="arrangementnumber_R" name="arrangementnumber_R" value="<%=arrangementnumber_R%>" placeholder="RH(UPR):手配番号を入力してください" required>
-  </div>
-   <div class="form-group col-sm-6">
     <label for="workperformancedate" class="required-label" id="workperformancedate_label"><b>作業実績日:</b></label>
     <input type="date" class="form-control" id="workperformancedate" name="workperformancedate" value="<%=workperformancedate%>"required>
  </div>
+</div>
+
+<div class="form-row">
+	<div class="form-group col-sm-6">
+    <label for="arrangementnumber" class="required-label" id="arrangementnumber_label"><b>手配番号　:</b> </label>
+    <input 
+      type="number" class="form-control" id="arrangementnumber" 
+      name="arrangementnumber" placeholder="LH(LWR):手配番号を入力してください" required>
+      <input 
+      type="number" class="form-control" id="arrangementnumber_R" 
+      name="arrangementnumber_R" placeholder="RH(UPR):手配番号を入力してください" required>
+      <% if(loginUser != null) {%> ✅ 更新の際は、LH(LWR) RH(UPR)の手配番号を一度削除して再入力して下さい。 <% } %>
+  </div>
+  
+  <div class="form-group col-sm-6">
+    <label for="partnumber" class="required-label" id="partnumber_label"><b>品番　　　:</b></label>
+    <input 
+      type="text" class="form-control" id="partnumber" name="partnumber" placeholder="LH(LWR):手配番号入力後、手配番号と合致する品番が表示されます"  disabled >
+     <div id="partnumber_errmessage" style="color: red; display: none;">LH(LWR):手配番号と合致する品番がありません</div>
+    <input 
+      type="text" class="form-control" id="partnumber_R" name="partnumber_R" placeholder="RH(UPR):手配番号入力後、手配番号と合致する品番が表示されます"  disabled >
+     <div id="partnumber_R_errmessage" style="color: red; display: none;">RH(UPR):手配番号と合致する品番がありません</div>
+     <% if(loginUser != null) {%> ✅ 手配番号を再入力した際、LH(LWR) RH(UPR)の品番が更新されたか確認して下さい。 <% } %>
+  </div>
 </div>
 
 <div class="form-row">
@@ -696,6 +717,34 @@ if (!workinghoursValue) {
 } else if(workinghoursValue === '夜勤'){
 	document.getElementById('radio1b').checked = true;
 }
+
+<!-- 品番:初期値に基づいて分岐 -->
+document.addEventListener('DOMContentLoaded', function () {
+	var partnumberValue = '<%=partnumber%>';
+    var selectElement = document.getElementsByName('partnumber')[0]; 
+
+    // 初期値が空の場合は何も選択しない
+    if (!partnumberValue) {
+        selectElement.value = '';
+    } else {
+        // 初期値が存在する場合は対応するオプションを選択
+        selectElement.value = partnumberValue;
+    }
+});
+
+<!-- 品番_R:初期値に基づいて分岐 -->
+document.addEventListener('DOMContentLoaded', function () {
+	var partnumber_RValue = '<%=partnumber_R%>';
+    var selectElement = document.getElementsByName('partnumber_R')[0]; 
+
+    // 初期値が空の場合は何も選択しない
+    if (!partnumber_RValue) {
+        selectElement.value = '';
+    } else {
+        // 初期値が存在する場合は対応するオプションを選択
+        selectElement.value = partnumber_RValue;
+    }
+});
 
 <!-- 機械コード:初期値に基づいて分岐 -->
 document.addEventListener('DOMContentLoaded', function () {
@@ -1339,6 +1388,7 @@ function submitForm() {
   document.getElementById('defectclassificationcode1').removeAttribute('disabled');
   document.getElementById('defectclassificationcode2').removeAttribute('disabled');
   document.getElementById('defectclassificationcode3').removeAttribute('disabled');
+  document.getElementById('partnumber').removeAttribute('disabled');
 
   // フォームを送信する
   document.getElementById('myForm').submit();
@@ -1374,6 +1424,121 @@ document.getElementById('workmannumber').addEventListener('input', function() {
     }
 });
 
+
+<!-- SQLから品番出力 -->
+//品番選択時のイベントリスナー
+document.getElementById("partnumber").addEventListener("change", function() {
+ const selectedPartnumber = this.value;
+ // 自動送信を行わない
+});
+
+//イベントリスナーを追加
+document.getElementById('partnumber').addEventListener('change', function () {
+    preventDuplicate(this);
+});
+//品番選択時のイベントリスナー
+document.getElementById("partnumber_R").addEventListener("change", function() {
+ const selectedPartnumber = this.value;
+ // 自動送信を行わない
+});
+
+//イベントリスナーを追加
+document.getElementById('partnumber_R').addEventListener('change', function () {
+    preventDuplicate(this);
+});
+
+<!-- 手配番号と品番の紐付け表示処理 -->
+document.getElementById("arrangementnumber").addEventListener("change", function() {
+    
+    const arrangementnumber = this.value.trim();
+    const partnumberInput = document.getElementById("partnumber");
+    const partnumberErrMessage = document.getElementById("partnumber_errmessage");
+
+    console.log("Selected arrangementnumber:", arrangementnumber);
+
+    partnumberInput.value = "LH(LWR):手配番号入力後、手配番号と合致する品番が表示されます"; // 初期化
+    partnumberInput.disabled = true; // デフォルトで無効
+    partnumberErrMessage.style.display = "none";   // エラーメッセージ非表示
+
+    if (arrangementnumber) {
+        fetch('main', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+            body: new URLSearchParams({ 'arrangementnumber': arrangementnumber })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            console.log("Parsed response data:", data[0].partnumber);
+            
+            if (Array.isArray(data) && data.length > 0) {
+                partnumberInput.value = data[0].partnumber; // ✅ 最初のデータを partnumber に格納
+                partnumberErrMessage.style.display = "none"; // エラー非表示
+                
+            } else {
+                partnumberInput.value = "";
+                partnumberErrMessage.style.display = "block"; // エラー表示
+                
+            }
+        })
+        .catch(error => {
+            console.error('エラー:', error);
+            partnumberInput.value = "";
+            partnumberErrMessage.style.display = "block";
+        });
+    }
+});
+
+
+<!-- 手配番号と品番の紐付け表示処理_R -->
+document.getElementById("arrangementnumber_R").addEventListener("change", function() {
+    
+	const arrangementnumber_R = this.value.trim();
+    const partnumber_RInput = document.getElementById("partnumber_R");
+    const partnumber_RErrMessage = document.getElementById("partnumber_R_errmessage");
+
+    console.log("Selected arrangementnumber_R:", arrangementnumber_R);
+
+    partnumber_RInput.value = "RH(UPR):手配番号入力後、手配番号と合致する品番が表示されます"; // 初期化
+    partnumber_RInput.disabled = true; // デフォルトで無効
+    partnumber_RErrMessage.style.display = "none";   // エラーメッセージ非表示
+
+    if (arrangementnumber_R) {
+        fetch('main2', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+            body: new URLSearchParams({ 'arrangementnumber_R': arrangementnumber_R })
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+        })
+        .then(data => {
+            console.log("Parsed response data:", data[0].partnumber_R);
+            console.log("Parsed response data:", data);
+            if (Array.isArray(data) && data.length > 0) {
+            	partnumber_RInput.value = data[0].partnumber_R; // ✅ 最初のデータを partnumber に格納
+            	partnumber_RInput.disabled = false; // 入力可能にする
+            	partnumber_RErrMessage.style.display = "none"; // エラー非表示
+                
+            } else {
+            	partnumber_RInput.value = "";
+            	partnumber_RInput.disabled = true; // 無効化
+                partnumber_RErrMessage.style.display = "block"; // エラー表示
+                
+            }
+        })
+        .catch(error => {
+            console.error('エラー:', error);
+            partnumber_RInput.value = "";
+            partnumber_RInput.disabled = true; // エラー時も無効化
+            partnumber_RErrMessage.style.display = "block";
+        });
+    }
+});
+
 <!-- ベトナム語と日本語切替 -->
 function toggleLanguage() {
 	var arrangementnumber_label = document.getElementById("arrangementnumber_label");
@@ -1399,6 +1564,50 @@ function toggleLanguage() {
     } else {
     	arrangementnumber_R.placeholder  = "RH(UPR):手配番号を入力してください";
     }
+
+	var partnumber_label = document.getElementById("partnumber_label");
+	var partnumber = document.getElementById("partnumber");
+	var partnumber_R = document.getElementById("partnumber_R");
+	// 品番_ラベルの翻訳変換
+	if (partnumber_label.textContent === "品番　　　:") {
+		partnumber_label.textContent = "Mã số sản phẩm:";
+		partnumber_label.style.fontWeight = "bold";
+	} else {
+		partnumber_label.textContent = "品番　　　:";
+		partnumber_label.style.fontWeight = "bold";
+	}
+	// 品番_メッセージの翻訳変換
+	if (partnumber.placeholder  === "LH(LWR):手配番号入力後、手配番号と合致する品番が表示されます") {
+		partnumber.placeholder  = "LH(LWR):Sau khi nhập số đơn hàng, số sản phẩm khớp với số đơn hàng sẽ được hiển thị.";
+    } else {
+    	partnumber.placeholder  = "LH(LWR):手配番号入力後、手配番号と合致する品番が表示されます";
+    }
+	// 品番R_メッセージの翻訳変換
+	if (partnumber_R.placeholder  === "RH(UPR):手配番号入力後、手配番号と合致する品番が表示されます") {
+		partnumber_R.placeholder  = "RH(UPR):Sau khi nhập số đơn hàng, số sản phẩm khớp với số đơn hàng sẽ được hiển thị.";
+    } else {
+    	partnumber_R.placeholder  = "RH(UPR):手配番号入力後、手配番号と合致する品番が表示されます";
+    }
+
+	// 品番が見つからない場合のメッセージの翻訳
+	const partnumberErrMessage = document.getElementById("partnumber_errmessage");
+	if (partnumberErrMessage) {
+	    if (partnumberErrMessage.innerText === "LH(LWR):手配番号と合致する品番がありません") {
+	    	partnumberErrMessage.innerText = "LH(LWR):Không có số sản phẩm khớp với số đơn hàng.";
+	    } else {
+	    	partnumberErrMessage.innerText = "LH(LWR):手配番号と合致する品番がありません";
+	    }
+	}
+	
+	// 品番Rが見つからない場合のメッセージの翻訳
+	const partnumber_RErrMessage = document.getElementById("partnumber_R_errmessage");
+	if (partnumber_RErrMessage) {
+	    if (partnumber_RErrMessage.innerText === "RH(UPR):手配番号と合致する品番がありません") {
+	    	partnumber_RErrMessage.innerText = "RH(UPR):Không có số sản phẩm khớp với số đơn hàng.";
+	    } else {
+	    	partnumber_RErrMessage.innerText = "RH(UPR):手配番号と合致する品番がありません";
+	    }
+	}
     
     var workperformancedate_label = document.getElementById("workperformancedate_label");
     // 作業実績日_ラベルの翻訳変換

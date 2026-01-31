@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
@@ -11,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.google.gson.Gson;
+
+import dao.BacklogDAO;
 import dao.ProductDAO;
 import model.Product;
 import model.User;
@@ -41,9 +45,86 @@ public class Main2 extends HttpServlet {
 	    }
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
+	    BacklogDAO dao2 = new BacklogDAO(); // ✅ `BacklogDAO` を使用
+
+	    request.setCharacterEncoding("UTF-8");
+	    response.setContentType("application/json;charset=UTF-8");
+
+		String arrangementnumber = request.getParameter("arrangementnumber");
+		String partnumber = request.getParameter("partnumber");
+		
+	    System.out.println("Received arrangementnumber via POST: " + arrangementnumber);
+	    
+	    if (arrangementnumber != null && !arrangementnumber.isEmpty() && partnumber == null) {
+	        try {
+	            // データベースから品番を取得
+	            List<Product> partnumberList = dao2.selectPartnumber(arrangementnumber);
+
+	            // レスポンスのコンテンツタイプを設定
+	            response.setContentType("application/json;charset=UTF-8");
+
+	            try (PrintWriter out = response.getWriter()) {
+	                if (partnumberList == null || partnumberList.isEmpty()) {
+	                    response.setStatus(HttpServletResponse.SC_NOT_FOUND); // 404エラー
+	                    out.write("{\"error\":\"品番リストが見つかりませんでした。\"}");
+	                    
+	                } else {
+	                    String json = new Gson().toJson(partnumberList);
+	                    System.out.println("取得したデータ (JSON変換後): " + json); // ログで確認
+	                    out.write(json);
+	                }
+	                out.flush();
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	            response.setContentType("application/json;charset=UTF-8");
+
+	            try (PrintWriter out = response.getWriter()) {
+	                out.write("{\"error\":\"サーバーでエラーが発生しました。詳細: " + e.getMessage() + "\"}");
+	                out.flush();
+	            }
+	        }
+	    }
+	    
+		String arrangementnumber_R = request.getParameter("arrangementnumber_R");
+		String partnumber_R = request.getParameter("partnumber_R");
+		
+	    System.out.println("Received arrangementnumber_R via POST: " + arrangementnumber_R);
+	    
+	    if (arrangementnumber_R != null && !arrangementnumber_R.isEmpty() && partnumber_R == null) {
+	        try {
+	            // データベースから予備品番を取得
+	            List<Product> partnumber_RList = dao2.selectPartnumber_R(arrangementnumber_R);
+
+	            // レスポンスのコンテンツタイプを設定
+	            response.setContentType("application/json;charset=UTF-8");
+
+	            try (PrintWriter out = response.getWriter()) {
+	                if (partnumber_RList == null || partnumber_RList.isEmpty()) {
+	                    response.setStatus(HttpServletResponse.SC_NOT_FOUND); // 404エラー
+	                    out.write("{\"error\":\"品番が見つかりませんでした。\"}");
+	                } else {
+	                    String json = new Gson().toJson(partnumber_RList);
+	                    System.out.println("取得したデータ (JSON変換後): " + json); // ログで確認
+	                    out.write(json);
+	                }
+	                out.flush();
+	            }
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+	            response.setContentType("application/json;charset=UTF-8");
+
+	            try (PrintWriter out = response.getWriter()) {
+	                out.write("{\"error\":\"サーバーでエラーが発生しました。詳細: " + e.getMessage() + "\"}");
+	                out.flush();
+	            }
+	        }
+	    }
+
+	    
 		String flag=request.getParameter("flag");
-		String arrangementnumber=request.getParameter("arrangementnumber");
 		String workperformancedate=request.getParameter("workperformancedate");
 		String workmannumber=request.getParameter("workmannumber");
 		String workmantime=request.getParameter("workmantime");
@@ -80,7 +161,6 @@ public class Main2 extends HttpServlet {
 		
 		String workmantime_R=request.getParameter("workmantime_R"); //作業工数_R
 		String machinetime_R=request.getParameter("machinetime_R"); //機械時間_R
-		String arrangementnumber_R=request.getParameter("arrangementnumber_R"); //手配番号_R
 		String numbernodefectiveproducts_R=request.getParameter("numbernodefectiveproducts_R"); //良品数_R
 		String totalnumberdefects_R=request.getParameter("totalnumberdefects_R"); //合計不良数_R
 		String defectclassificationcode1_R=request.getParameter("defectclassificationcode1_R"); //不良分類コード1_R
@@ -108,10 +188,10 @@ public class Main2 extends HttpServlet {
 		String sparenumberdefects2_R=request.getParameter("sparenumberdefects2_R"); //予備不良数2_R
 		String sparenumberdefects3_R=request.getParameter("sparenumberdefects3_R"); //予備不良数3_R
 		
+		ProductDAO dao=new ProductDAO();
 		if(arrangementnumber.isEmpty() || workperformancedate.isEmpty()){
 			request.setAttribute("err","未記入の項目があります！");
 		}else{
-			ProductDAO dao=new ProductDAO();
 			String id=request.getParameter("id");
 			if(id != null){
 				dao.updateOne(new Product(Integer.parseInt(id),Integer.parseInt(flag),Integer.parseInt(arrangementnumber),
@@ -123,7 +203,7 @@ public class Main2 extends HttpServlet {
 						defectclassificationcode7,numberdefects7,defectclassificationcode8,numberdefects8,
 						defectclassificationcode9,numberdefects9,
 						sparepartnumber1,sparepartnumber2,sparepartnumber3,
-						sparenumberdefects1,sparenumberdefects2,sparenumberdefects3,
+						sparenumberdefects1,sparenumberdefects2,sparenumberdefects3,partnumber,
 						Float.parseFloat(workmantime_R),Float.parseFloat(machinetime_R),Integer.parseInt(arrangementnumber_R),
 						Integer.parseInt(numbernodefectiveproducts_R),Integer.parseInt(totalnumberdefects_R),
 						defectclassificationcode1_R,Integer.parseInt(numberdefects1_R),defectclassificationcode2_R,Integer.parseInt(numberdefects2_R),
@@ -132,7 +212,7 @@ public class Main2 extends HttpServlet {
 						defectclassificationcode7_R,numberdefects7_R,defectclassificationcode8_R,numberdefects8_R,
 						defectclassificationcode9_R,numberdefects9_R,
 						sparepartnumber1_R,sparepartnumber2_R,sparepartnumber3_R,
-						sparenumberdefects1_R,sparenumberdefects2_R,sparenumberdefects3_R));
+						sparenumberdefects1_R,sparenumberdefects2_R,sparenumberdefects3_R,partnumber_R));
 				request.setAttribute("msg","1件更新しました。");
 			}else{
 				dao.insertOne(new Product(Integer.parseInt(flag),Integer.parseInt(arrangementnumber),
@@ -144,7 +224,7 @@ public class Main2 extends HttpServlet {
 						defectclassificationcode7,numberdefects7,defectclassificationcode8,numberdefects8,
 						defectclassificationcode9,numberdefects9,
 						sparepartnumber1,sparepartnumber2,sparepartnumber3,
-						sparenumberdefects1,sparenumberdefects2,sparenumberdefects3,
+						sparenumberdefects1,sparenumberdefects2,sparenumberdefects3,partnumber,
 						Float.parseFloat(workmantime_R),Float.parseFloat(machinetime_R),Integer.parseInt(arrangementnumber_R),
 						Integer.parseInt(numbernodefectiveproducts_R),Integer.parseInt(totalnumberdefects_R),
 						defectclassificationcode1_R,Integer.parseInt(numberdefects1_R),defectclassificationcode2_R,Integer.parseInt(numberdefects2_R),
@@ -153,7 +233,7 @@ public class Main2 extends HttpServlet {
 						defectclassificationcode7_R,numberdefects7_R,defectclassificationcode8_R,numberdefects8_R,
 						defectclassificationcode9_R,numberdefects9_R,
 						sparepartnumber1_R,sparepartnumber2_R,sparepartnumber3_R,
-						sparenumberdefects1_R,sparenumberdefects2_R,sparenumberdefects3_R));
+						sparenumberdefects1_R,sparenumberdefects2_R,sparenumberdefects3_R,partnumber_R));
 				request.setAttribute("msg","1件登録しました。");
 			}
 		}
